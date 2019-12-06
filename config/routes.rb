@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :favorites
+  resources :dogs
   # root 'welcome#index'
   # get 'players/name'
   # get 'players/position'
