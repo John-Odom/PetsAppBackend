@@ -12,48 +12,77 @@
 
 
 
-# require 'rest-client' 
-# require'pry'
+require 'rest-client' 
+require'pry'
+require 'net/http'
+require 'uri'
 
-# # curl -d "grant_type=client_credentials&client_id=jNWSm5dXwyJJC4igJBvOue0yL6AFfZliJHeFGcHTupBUO1wJupWOVdax9Jr03D" https://api.petfinder.com/v2/oauth2/token
+Dog.delete_all
 
-# Dog.delete_all
-
-# apiKey = "jNWSm5dXwyJJC4igJBvOue0yL6AFfZliXChD0OHRWoqDqr1xmG"
-# apiSecret = "PRwYGYAUofJHeFGcHTupBUO1wJupWOVdax9Jr03D"
-
-
-# georgia_orgs_array=[]
-# georgia_orgs_ids=[]
-# georgia_dogs=[]
-
-# organizations = RestClient.get 'https://api.petfinder.com/v2/organizations?location=atlanta, GA&distance=20&limit=100&', {:Authorization => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjMwODA3ZTIyMzk1ZGUxMWQ5MjYyM2M4MTEzNGEzODQ0YzQ0Y2VmZjU3Njg5YWQ3Mzg4OTZhN2IyNWFjZDllODdkNjczYzYyNzU0YmFhZWRkIn0.eyJhdWQiOiJqTldTbTVkWHd5SkpDNGlnSkJ2T3VlMHlMNkFGZlpsaVhDaEQwT0hSV29xRHFyMXhtRyIsImp0aSI6IjMwODA3ZTIyMzk1ZGUxMWQ5MjYyM2M4MTEzNGEzODQ0YzQ0Y2VmZjU3Njg5YWQ3Mzg4OTZhN2IyNWFjZDllODdkNjczYzYyNzU0YmFhZWRkIiwiaWF0IjoxNTc1NjU2MTI0LCJuYmYiOjE1NzU2NTYxMjQsImV4cCI6MTU3NTY1OTcyNCwic3ViIjoiIiwic2NvcGVzIjpbXX0.aWE-JgUHwyPvlwkXYOGFZLJtw6fDgeSiqW3OFxKiLXo1Qk6DYMd0kCZmUYRAaWUYQzBCHUjaz3KWOlDxzD6NQRWpzMsPwFK7UI6DXFNvweQjl_U-gjB15rYlX1sv0Oju-ZK0oDe9P3SillyM59ojXwpfN-ptoyuBUgFTcbSPiH4MYGOYdk-eLNgsvgfxlX4ECYye9rz1ezk4t0Q495RlLmj9rJ1Eqw3U3UcaqZDIkjlLl45qcBGrD0OtXIZlye8S-V-aBpWx93kwYdxtouzfmov_tY2g03wBNfS7nOTH04A5fNr-NjPC9LN4BVtM3E4evds-XLgiFXDWFqMHshUxSg'}
-# organization_objects=JSON.parse(organizations)
-# organization_objects["organizations"].each do |organization|
-#     georgia_orgs_array << organization
-#     georgia_orgs_ids << organization["id"]
-# end
-
-# georgia_orgs_ids.each do |id|
-#     dogs = RestClient.get 'https://api.petfinder.com/v2/animals?organization=' + id + '&type=dog&limit=100', {:Authorization => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjMwODA3ZTIyMzk1ZGUxMWQ5MjYyM2M4MTEzNGEzODQ0YzQ0Y2VmZjU3Njg5YWQ3Mzg4OTZhN2IyNWFjZDllODdkNjczYzYyNzU0YmFhZWRkIn0.eyJhdWQiOiJqTldTbTVkWHd5SkpDNGlnSkJ2T3VlMHlMNkFGZlpsaVhDaEQwT0hSV29xRHFyMXhtRyIsImp0aSI6IjMwODA3ZTIyMzk1ZGUxMWQ5MjYyM2M4MTEzNGEzODQ0YzQ0Y2VmZjU3Njg5YWQ3Mzg4OTZhN2IyNWFjZDllODdkNjczYzYyNzU0YmFhZWRkIiwiaWF0IjoxNTc1NjU2MTI0LCJuYmYiOjE1NzU2NTYxMjQsImV4cCI6MTU3NTY1OTcyNCwic3ViIjoiIiwic2NvcGVzIjpbXX0.aWE-JgUHwyPvlwkXYOGFZLJtw6fDgeSiqW3OFxKiLXo1Qk6DYMd0kCZmUYRAaWUYQzBCHUjaz3KWOlDxzD6NQRWpzMsPwFK7UI6DXFNvweQjl_U-gjB15rYlX1sv0Oju-ZK0oDe9P3SillyM59ojXwpfN-ptoyuBUgFTcbSPiH4MYGOYdk-eLNgsvgfxlX4ECYye9rz1ezk4t0Q495RlLmj9rJ1Eqw3U3UcaqZDIkjlLl45qcBGrD0OtXIZlye8S-V-aBpWx93kwYdxtouzfmov_tY2g03wBNfS7nOTH04A5fNr-NjPC9LN4BVtM3E4evds-XLgiFXDWFqMHshUxSg'}
-#     dog_objects = JSON.parse(dogs)
-#     binding.pry
-# end
+# curl -d "grant_type=client_credentials&client_id=jNWSm5dXwyJJC4igJBvOue0yL6AFfZliJHeFGcHTupBUO1wJupWOVdax9Jr03D" https://api.petfinder.com/v2/oauth2/token
+apiKey = "jNWSm5dXwyJJC4igJBvOue0yL6AFfZliXChD0OHRWoqDqr1xmG"
+apiSecret = "mdd46smECtcGndlPsXQTbM6YKO907s2uMQ0vvCtc"
+# RestClient.get 'https://api.petfinder.com/v2/oauth2/token', "grant_type=client_credentials&client_id=#{apiKey}&client_secret=#{apiSecret}"
+# curl -d "grant_type=client_credentials&client_id=#{apiKey}&client_secret=#{apiSecret}" https://api.petfinder.com/v2/oauth2/token
+accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjFiNTRkNjg2ZGFlZjc2ODBlZDg3NTUzZGQyNzgzMWRmZWM3NTExNmI2MmM0YjhhMTM1NDI1NTM0NGExOTc0ZTRkMDAxMmRjM2Q3MThkNWRjIn0.eyJhdWQiOiJqTldTbTVkWHd5SkpDNGlnSkJ2T3VlMHlMNkFGZlpsaVhDaEQwT0hSV29xRHFyMXhtRyIsImp0aSI6IjFiNTRkNjg2ZGFlZjc2ODBlZDg3NTUzZGQyNzgzMWRmZWM3NTExNmI2MmM0YjhhMTM1NDI1NTM0NGExOTc0ZTRkMDAxMmRjM2Q3MThkNWRjIiwiaWF0IjoxNTc2MDkzMDA3LCJuYmYiOjE1NzYwOTMwMDcsImV4cCI6MTU3NjA5NjYwNywic3ViIjoiIiwic2NvcGVzIjpbXX0.lj1IkBZVuSSdH-rtvZj78LaMD6KFCii42ymm9MRJBPP2aiPQBYzUNCMl0-oVTF0wL6LwQAHMqnrAya2ZT_0b9Vhd_ISRfyJIxB-2zIwwnFRyP9hCo9ErMW-h3-WZ6qmmXFEwYzdhcmgKi58Bq1gswleozeg1O3BxQS9CFACoo_dxaI-WAQZMUi2sWISUButY8UYW0JqEwsPpHwXafd625eXMjyA-_2CU-MuV-IJMMQaqsAx4bqyYpKEKnmx4DYZ8m1bbyHAOWYP1ylFe5BpKA4f_ma-9U_KesrV9lvFbC1mwStIjlnSfylhsLrZYtwbMFArXWkb02oDWtcc_KNeW1g'
 
 
-# # dogs_list = RestClient.get 'https://api.petfinder.com/v2/animals?organization=FL252&type=dog&limit=100', {:Authorization => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjMwODA3ZTIyMzk1ZGUxMWQ5MjYyM2M4MTEzNGEzODQ0YzQ0Y2VmZjU3Njg5YWQ3Mzg4OTZhN2IyNWFjZDllODdkNjczYzYyNzU0YmFhZWRkIn0.eyJhdWQiOiJqTldTbTVkWHd5SkpDNGlnSkJ2T3VlMHlMNkFGZlpsaVhDaEQwT0hSV29xRHFyMXhtRyIsImp0aSI6IjMwODA3ZTIyMzk1ZGUxMWQ5MjYyM2M4MTEzNGEzODQ0YzQ0Y2VmZjU3Njg5YWQ3Mzg4OTZhN2IyNWFjZDllODdkNjczYzYyNzU0YmFhZWRkIiwiaWF0IjoxNTc1NjU2MTI0LCJuYmYiOjE1NzU2NTYxMjQsImV4cCI6MTU3NTY1OTcyNCwic3ViIjoiIiwic2NvcGVzIjpbXX0.aWE-JgUHwyPvlwkXYOGFZLJtw6fDgeSiqW3OFxKiLXo1Qk6DYMd0kCZmUYRAaWUYQzBCHUjaz3KWOlDxzD6NQRWpzMsPwFK7UI6DXFNvweQjl_U-gjB15rYlX1sv0Oju-ZK0oDe9P3SillyM59ojXwpfN-ptoyuBUgFTcbSPiH4MYGOYdk-eLNgsvgfxlX4ECYye9rz1ezk4t0Q495RlLmj9rJ1Eqw3U3UcaqZDIkjlLl45qcBGrD0OtXIZlye8S-V-aBpWx93kwYdxtouzfmov_tY2g03wBNfS7nOTH04A5fNr-NjPC9LN4BVtM3E4evds-XLgiFXDWFqMHshUxSg'}
-# dog_objects=JSON.parse(dogs_list)
-# dog_objects["animals"].each do |dog|
-#     binding.pry
-#     # organization["id"].starts_with?("GA") ? georgia_organizations << organization : nil
-    
-#     # neworganization = PetTest.create(name: organization[1], location: "Atlanta")
-#     # team["players"].each do |player|
-#     #     PetTest.create(
-#     #         name:player["player_name"], 
-#     #         position:player["player_type"], 
-#     #         fifa_rating: rand(60...100), 
-#     #         team_id:newTeam.id)
-#     # end
-# end
-# binding.pry
+
+
+uri = URI.parse("https://api.petfinder.com/v2/oauth2/token")
+request = Net::HTTP::Post.new(uri)
+request.set_form_data(
+  "client_id" => "#{apiKey}",
+  "client_secret" => "#{apiSecret}",
+  "grant_type" => "client_credentials",
+)
+
+req_options = {
+  use_ssl: uri.scheme == "https",
+}
+
+response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+  http.request(request)
+end
+
+testToken = response.body
+unparsedTestToken = testToken.split(":")[3]
+accessToken = unparsedTestToken.slice(1, unparsedTestToken.length-3)
+
+
+
+georgia_orgs_array=[]
+georgia_orgs_ids=[]
+georgia_dogs=[]
+
+organizations = RestClient.get 'https://api.petfinder.com/v2/organizations?location=atlanta, GA&distance=20&limit=100&', {:Authorization => "Bearer #{accessToken}"}
+organization_objects=JSON.parse(organizations)
+organization_objects["organizations"].each do |organization|
+    georgia_orgs_array << organization
+    georgia_orgs_ids << organization["id"]
+end
+
+georgia_orgs_ids.each do |id|
+    dogs = RestClient.get 'https://api.petfinder.com/v2/animals?organization=' + id + '&status=adoptable&age=adult,senior&type=dog&limit=100', {:Authorization => "Bearer #{accessToken}"}
+    dog_objects = JSON.parse(dogs)
+    dog_objects["animals"].each do |dog|
+        georgia_dogs << dog
+        if dog["photos"][0]
+            new_dog = Dog.new(
+                name: dog["name"],
+                gender: dog["gender"],
+                size: dog["size"],
+                age: dog["age"],
+                bio: dog['description'],
+                color: dog['colors']['primary'],
+                location: dog["contact"]["address"]["city"],
+                breed: dog["breeds"]["primary"],
+                image: dog["photos"][0]["medium"]
+            )
+        
+            new_dog.valid? ? new_dog.save : null
+        end
+    end
+end
+
+binding.pry
