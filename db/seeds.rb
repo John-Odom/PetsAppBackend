@@ -9,9 +9,6 @@
 
 # curl -d "grant_type=client_credentials&client_id={CLIENT-ID}&client_secret={CLIENT-SECRET}" https://api.petfinder.com/v2/oauth2/token
 
-
-
-
 require 'rest-client' 
 require'pry'
 require 'net/http'
@@ -77,8 +74,19 @@ georgia_orgs_ids.each do |id|
                 color: dog['colors']['primary'],
                 location: dog["contact"]["address"]["city"],
                 breed: dog["breeds"]["primary"],
-                image: dog["photos"][0]["medium"]
+                image: dog["photos"][0]["medium"],
+                api_dog_id: dog["id"]
             )
+            if dog["photos"][1]
+                new_dog[:image2] = dog["photos"][1]["medium"]
+            end
+            if dog["photos"][2]
+                new_dog[:image3] = dog["photos"][2]["medium"]
+            end
+            if dog["photos"][3]
+                new_dog[:image4] = dog["photos"][3]["medium"]
+            end
+
         
             new_dog.valid? ? new_dog.save : null
         end

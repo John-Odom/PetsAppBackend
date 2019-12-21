@@ -7,8 +7,5 @@ class DogsController < ApplicationController
         dog=Dog.find(params[:id])
         render json: dog
     end
-    # def create
-    #     dog=Dog.find(params[:id])
-    #     render json: dog
-    # end
+    
 end
