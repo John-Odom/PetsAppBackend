@@ -15,6 +15,7 @@ require 'net/http'
 require 'uri'
 
 Dog.delete_all
+Organization.delete_all
 
 # curl -d "grant_type=client_credentials&client_id=jNWSm5dXwyJJC4igJBvOue0yL6AFfZliJHeFGcHTupBUO1wJupWOVdax9Jr03D" https://api.petfinder.com/v2/oauth2/token
 apiKey = "jNWSm5dXwyJJC4igJBvOue0yL6AFfZliXChD0OHRWoqDqr1xmG"
@@ -46,8 +47,6 @@ testToken = response.body
 unparsedTestToken = testToken.split(":")[3]
 accessToken = unparsedTestToken.slice(1, unparsedTestToken.length-3)
 
-
-
 georgia_orgs_array=[]
 georgia_orgs_ids=[]
 georgia_dogs=[]
@@ -57,6 +56,33 @@ organization_objects=JSON.parse(organizations)
 organization_objects["organizations"].each do |organization|
     georgia_orgs_array << organization
     georgia_orgs_ids << organization["id"]
+    if organization['photos'][0]
+        new_org = Organization.new(
+            name: organization['name'],
+            website: organization['website'],
+            street: organization['address']['address1'],
+            zip:organization['address']['postcode'],
+            state: organization['address']['state'],
+            city: organization['address']['city'],
+            phone: organization['phone'],
+            email: organization['email'],
+            apiid: organization['id'],
+            image: organization['photos'][0]['medium']
+        )
+    else
+        new_org = Organization.new(
+            name: organization['name'],
+            website: organization['website'],
+            street: organization['address']['address1'],
+            zip:organization['address']['postcode'],
+            state: organization['address']['state'],
+            city: organization['address']['city'],
+            phone: organization['phone'],
+            email: organization['email'],
+            apiid: organization['id'],
+        )
+    end
+    new_org.valid? ? new_org.save : nil
 end
 
 georgia_orgs_ids.each do |id|
@@ -75,7 +101,8 @@ georgia_orgs_ids.each do |id|
                 location: dog["contact"]["address"]["city"],
                 breed: dog["breeds"]["primary"],
                 image: dog["photos"][0]["medium"],
-                api_dog_id: dog["id"]
+                api_dog_id: dog["id"],
+                organization_id: Organization.find_by(apiid:dog['organization_id']).id
             )
             if dog["photos"][1]
                 new_dog[:image2] = dog["photos"][1]["medium"]
@@ -86,11 +113,8 @@ georgia_orgs_ids.each do |id|
             if dog["photos"][3]
                 new_dog[:image4] = dog["photos"][3]["medium"]
             end
-
         
-            new_dog.valid? ? new_dog.save : null
+            new_dog.valid? ? new_dog.save : nil
         end
     end
 end
-
-binding.pry
