@@ -48,14 +48,15 @@ unparsedTestToken = testToken.split(":")[3]
 accessToken = unparsedTestToken.slice(1, unparsedTestToken.length-3)
 
 georgia_orgs_array=[]
-georgia_orgs_ids=[]
+# orgs_with_dogs=[]
 georgia_dogs=[]
 
 organizations = RestClient.get 'https://api.petfinder.com/v2/organizations?location=atlanta, GA&distance=20&limit=100&', {:Authorization => "Bearer #{accessToken}"}
 organization_objects=JSON.parse(organizations)
 organization_objects["organizations"].each do |organization|
+    # binding.pry
     georgia_orgs_array << organization
-    georgia_orgs_ids << organization["id"]
+    # georgia_orgs_ids << organization["id"]
     if organization['photos'][0]
         new_org = Organization.new(
             name: organization['name'],
@@ -85,10 +86,13 @@ organization_objects["organizations"].each do |organization|
     new_org.valid? ? new_org.save : nil
 end
 
-georgia_orgs_ids.each do |id|
-    dogs = RestClient.get 'https://api.petfinder.com/v2/animals?organization=' + id + '&status=adoptable&age=adult,senior&type=dog&limit=100', {:Authorization => "Bearer #{accessToken}"}
+georgia_orgs_array.each do |array|
+    # binding.pry
+    dogs = RestClient.get 'https://api.petfinder.com/v2/animals?organization=' + array['id'] + '&status=adoptable&age=adult,senior&type=dog&limit=100', {:Authorization => "Bearer #{accessToken}"}
+    # binding.pry
     dog_objects = JSON.parse(dogs)
     dog_objects["animals"].each do |dog|
+        # binding.pry
         georgia_dogs << dog
         if dog["photos"][0]
             new_dog = Dog.new(
@@ -113,8 +117,11 @@ georgia_orgs_ids.each do |id|
             if dog["photos"][3]
                 new_dog[:image4] = dog["photos"][3]["medium"]
             end
-        
             new_dog.valid? ? new_dog.save : nil
         end
     end
+end
+
+Organization.all.each do |org|
+    org.dogs == [] ? org.delete : nil
 end
