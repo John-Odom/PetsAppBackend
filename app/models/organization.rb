@@ -1,3 +1,3 @@
 class Organization < ApplicationRecord
-    has_many :dogs
+    # has_many :dogs
 end

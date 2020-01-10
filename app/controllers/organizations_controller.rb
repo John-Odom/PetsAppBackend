@@ -7,5 +7,4 @@ class OrganizationsController < ApplicationController
         org = Organization.find(params[:id])
         render json: org
     end
-
 end
