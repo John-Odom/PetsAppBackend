@@ -43,7 +43,8 @@ class DogsController < ApplicationController
             image: image1,
             image2: image2,
             image3: image3,
-            image4: image4
+            image4: image4,
+            api_org_id: params['dog']['organization_id']
         )
         if dog.save
 			render json: dog, status: :created

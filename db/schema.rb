@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_10_122118) do
+ActiveRecord::Schema.define(version: 2020_01_10_143118) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 2020_01_10_122118) do
     t.string "image2"
     t.string "image3"
     t.string "image4"
+    t.string "api_org_id"
   end
 
   create_table "favorites", force: :cascade do |t|
