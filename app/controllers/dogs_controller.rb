@@ -45,9 +45,12 @@ class DogsController < ApplicationController
             image3: image3,
             image4: image4
         )
-    end
-
-    
+        if dog.save
+			render json: dog, status: :created
+		else
+			render json: dog.errors.full_messages, status: :unprocessable_entity
+		end
+    end    
 end
 
 
