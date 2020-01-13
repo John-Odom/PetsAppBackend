@@ -6,7 +6,7 @@ class UsersController < ApplicationController
     end
 
     def profile
-        render json: { user: current_user }, status: :accepted
+        render json: { user: current_user, dogs: current_user.dogs }, status: :accepted
     end
 
     def show
