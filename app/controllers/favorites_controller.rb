@@ -4,7 +4,14 @@ class FavoritesController < ApplicationController
         render json: favorites
     end
     def create
-        favorite=Favorite.create(dog_id: params["dog_id"], user_id:params["user_id"], api_dog_id:params['api_dog_id'])
+        byebug
+        favorite=Favorite.create(dog_id: fave_params["dog_id"], user_id:fave_params["user_id"])
         render json: { favorite: favorite }, status: :created
     end
+
+    private
+  
+    def fave_params
+    params.require(:favorite).permit(:dog_id, :user_id)
+    end 
 end
