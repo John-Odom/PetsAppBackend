@@ -8,25 +8,27 @@ class DogsController < ApplicationController
         dog=Dog.find(params[:id])
         render json: dog
     end
-        # since dog.photos is json, and not a string or integer, we must first declare
-        # it as it's class, then we can fill in the array
-        #Json causing problems with the contact[address] as well
-        #JSON.parse would not work - JSON.parse(dog.contact['address'])
+
     def create
-         dog=Dog.find_or_create_by!(
-            name: params['dog']["name"], gender: params['dog']["gender"],
-            size: params['dog']["size"], age: params['dog']["age"],
-            description: params['dog']['description'], breeds: params['dog']["breeds"],
-            organization_id: params['dog']['organization_id'], status: params['dog']['status'],
-        )
-        dog.photos=params['dog']['photos']
-        dog.contact['address'] = params['dog']['contact']['address']
-        if dog.save
+        dog=Dog.find_or_create_by!(name: dog_params["name"], gender: dog_params["gender"],
+            size: dog_params["size"], age: dog_params["age"],
+            description: dog_params['description'], breeds: dog_params["breeds"],
+            organization_id: dog_params['organization_id'], status: dog_params['status'],
+            contact: dog_params[:contact], photos: dog_params['photos'])
+        if dog.valid?
 			render json: dog, status: :created
 		else
 			render json: dog.errors.full_messages, status: :unprocessable_entity
 		end
-    end    
+    end
+
+    private
+  
+    def dog_params
+    params.require(:dog).permit(:name, :gender, :size, :age, :description, 
+        :organization_id, :status, photos:[:small, :medium, :large, :full], 
+        contact:[{address:[:city, :state, :address1, :postcode]}, :email, :phone], breeds:[:primary, :secondary])
+    end 
 end
 
 
