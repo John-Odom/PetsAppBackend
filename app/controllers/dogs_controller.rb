@@ -5,7 +5,7 @@ class DogsController < ApplicationController
         render json: dogs
     end
     def show
-        dog=Dog.find(params[:id])
+        dog=Dog.find(dog_params[:id])
         render json: dog
     end
 
@@ -25,7 +25,7 @@ class DogsController < ApplicationController
     private
   
     def dog_params
-    params.require(:dog).permit(:name, :gender, :size, :age, :description, 
+    params.require(:dog).permit(:id, :name, :gender, :size, :age, :description, 
         :organization_id, :status, photos:[:small, :medium, :large, :full], 
         contact:[{address:[:city, :state, :address1, :postcode]}, :email, :phone], breeds:[:primary, :secondary])
     end 

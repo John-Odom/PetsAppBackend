@@ -4,24 +4,27 @@ class OrganizationsController < ApplicationController
         orgs = Organization.all
         render json: orgs
     end
+    
     def show
-        org = Organization.find(params[:id])
+        org = Organization.find(org_params[:id])
         render json: org
     end
+
     def create
-        image1=nil
-        params['org']["photos"][0] ? image1 = params['org']["photos"][0]["medium"] : nil
-        org=Organization.find_or_create_by!(
-            name: params['org']["name"], image: image1,
-            website: params['org']['website'], street: params['org']['address']['address1'],
-            zip: params['org']['address']['postcode'], state: params['org']['address']['state'],
-            city: params['org']['address']['city'], phone:params['org']['phone'],
-            email:params['org']['email'], apiid:params['org']['id']
-        )
+        org=Organization.find_or_create_by!(name: org_params["name"], website: org_params["website"],
+        phone: org_params["phone"], email:org_params["email"], apiid: org_params["id"], street:org_params["address"]["address1"],
+        city:org_params["address"]["city"], state:org_params["address"]["state"], zip:org_params["address"]["postcode"])
         if org.save
 			render json: org, status: :created
 		else
 			render json: org.errors.full_messages, status: :unprocessable_entity
 		end
     end
+
+    private
+  
+    def org_params
+    params.require(:org).permit(:id, :name, :website, :website, 
+    :phone, :email, :id, photos:[:small, :medium, :large, :full], address:[:city, :state, :address1, :postcode])
+    end 
 end
