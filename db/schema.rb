@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_14_222951) do
+ActiveRecord::Schema.define(version: 2020_01_20_145005) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -27,8 +27,8 @@ ActiveRecord::Schema.define(version: 2020_01_14_222951) do
     t.string "organization_id"
     t.string "description"
     t.string "status"
-    t.json "photos"
     t.hstore "contact", default: {}, null: false
+    t.text "photos"
   end
 
   create_table "favorites", force: :cascade do |t|
